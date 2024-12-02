@@ -436,6 +436,7 @@ class Command(_BaseCommand, Generic[CogT, P, T]):
         self.information: Optional[str] = kwargs.get('information')
         self.notes: Optional[str] = kwargs.get('notes')
         self.parameters: Dict[Any, Any] = kwargs.get('parameters', {})
+        self.customdescription: Optional[str] = kwargs.get('customdescription')
 
         self._flag: Optional[BasicFlags] = kwargs.get('flag')
 
