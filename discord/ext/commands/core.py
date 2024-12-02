@@ -433,6 +433,9 @@ class Command(_BaseCommand, Generic[CogT, P, T]):
         self.aliases: Union[List[str], Tuple[str]] = kwargs.get('aliases', [])
         self.extras: Dict[Any, Any] = kwargs.get('extras', {})
         self.example: Optional[str] = kwargs.get('example')
+        self.information: Optional[str] = kwargs.get('information')
+        self.notes: Optional[str] = kwargs.get('notes')
+        self.parameters: Dict[Any, Any] = kwargs.get('parameters', {})
 
         self._flag: Optional[BasicFlags] = kwargs.get('flag')
 
@@ -561,8 +564,11 @@ class Command(_BaseCommand, Generic[CogT, P, T]):
         ]
 
     @discord.utils.cached_property
-    def permissions(self) -> List[str]:
-        return [perm for check in self.checks if getattr(check, '__closure__', None) for cell in check.__closure__ if isinstance(cell.cell_contents, dict) for perm, val in cell.cell_contents.items() if val] or ['N/A']  # type: ignore
+    def permissions(self) -> Optional[List[str]]:
+        perms = [perm for check in self.checks if getattr(check, '__closure__', None) 
+                for cell in check.__closure__ if isinstance(cell.cell_contents, dict) 
+                for perm, val in cell.cell_contents.items() if val]
+        return perms if perms else None
 
     def add_check(self, func: UserCheck[Context[Any]], /) -> None:
         """Adds a check to the command.
